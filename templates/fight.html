@@ -1,56 +1,145 @@
-<!DOCTYPE html >
-<html>
-  <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>Skyprogram</title>
-    <meta charset="UTF-8">
-  </head>
-  <body>
-    <main style ="width: 1024px; margin: 0 auto;">
-      <div class="container">
-        <div class="row align-text-top">
-          <div class="col align-self-start">
-            <h2>{{ heroes.player.name }}</br>класс: <em>{{ heroes.player.unit_class.name }}</em></h2>
-            <p><em>Экипировка:</em></p>
-            <hr>
-            <p>Оружие: {{ heroes.player.weapon.name }}, урон: {{ heroes.player.weapon.min_damage }} - {{ heroes.player.weapon.max_damage }}</br> Броня:
-              {{ heroes.player.armor.name }}, защита: {{ heroes.player.armor.defence }}</p>
-            <hr>
-            <p><em>Информация:</em></p>
-            <hr>
-            <p>Очки здоровья: {{ heroes.player.health_points }}/{{ heroes.player.unit_class.max_health }}</br> Очки выносливости:
-              {{ heroes.player.stamina_points }}/{{ heroes.player.unit_class.max_stamina }}</p>
-          </div>
-          <div class="col align-self-center">
-            <button type="button" onclick="window.location.href='/fight/hit'" class="btn btn-success m-2">Нанести удар</button></br>
-            <button type="button" onclick="window.location.href='/fight/use-skill'" class="btn btn-danger m-2">Использовать умение</button></br>
-            <button type="button" onclick="window.location.href='/fight/pass-turn'" class="btn btn-warning m-2">Пропустить ход</button></br>
-            <button type="button" onclick="window.location.href='/fight/end-fight'" class="btn btn-secondary m-2">Завершить бой</button>
-          </div>
-          <div class="col align-self-start">
-            <h2>{{ heroes.enemy.name }}</br>класс: <em>{{ heroes.enemy.unit_class.name }}</em></h2>
-            <p><em>Экипировка:</em></p>
-            <hr>
-            <p>Оружие: {{ heroes.enemy.weapon.name }}, урон: {{ heroes.enemy.weapon.min_damage }} - {{ heroes.enemy.weapon.max_damage }}</br> Броня:
-              {{ heroes.enemy.armor.name }}, защита: {{ heroes.enemy.armor.defence }}</p>
-            <hr>
-            <p><em>Информация:</em></p>
-            <hr>
-            <p>Очки здоровья: {{ heroes.enemy.health_points }}/{{ heroes.enemy.unit_class.max_health }}</br> Очки выносливости:
-              {{ heroes.enemy.stamina_points }}/{{ heroes.enemy.unit_class.max_stamina }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <hr>
-        <div class="row">
-          <div class="col align-content-center">
-            <p><em>{{ result }}</em></p>
-            <p>{{ battle_result }}</p>
-          </div>
-        </div>
-        <hr>
-      </div>
-    </main>
-  </body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+    <div class="div_center" style="margin-top: 20px">
+        <main style="width: 900px; margin: auto">
+            <div class="container div_center">
+                <div class="row align-text-top">
+                    <div class="col align-self-start">
+                        <h2 style="color: rgb(111,157,197)">{{ heroes.player.name }}</h2>
+                        <img src="/static/images/{{ heroes.player.unit_class.name.lower() }}.png">
+                        <h4 style="color: rgb(111,157,197)">Класс: {{ heroes.player.unit_class.name }}</h4>
+                        <div class="info_item">
+                            <h5 style="color: #257a27">Навык:</h5>
+                            {{ heroes.player.unit_class.skill.name }} / Урон: {{ heroes.player.unit_class.skill.damage }}
+                            | Выносливость: {{ heroes.player.unit_class.skill.stamina }}
+                        </div>
+                        <div class="info_item">
+                            <h5 style="color: #257a27">Экипировка:</h5>
+                        </div>
+                        <div class="info_item div_row">
+                            <div class="col left">
+                                <div class="div_center">Оружие<br>
+                                    <img src="/static/images/{{ heroes.player.weapon.name.lower() }}.png">
+                                </div>
+                                <div class="div_center">{{ heroes.player.weapon.name }}<br>
+                                    Урон: {{ heroes.player.weapon.min_damage }}
+                                    - {{ heroes.player.weapon.max_damage }}</div>
+                            </div>
+                            <div class="col right">
+                                <div class="div_center">Броня<br>
+                                    <img src="/static/images/{{ heroes.player.armor.name.lower() | replace(" ", "_") }}.png">
+                                </div>
+                                <div class="div_center">{{ heroes.player.armor.name }}<br>
+                                    Защита: {{ heroes.player.armor.defence }}</div>
+                            </div>
+                        </div>
+                        <div class="info_item">Здоровье
+                            <div class="div_center div_row">
+                                <div class="col left">{{ heroes.player.health_points }}</div>
+                                <div class="col health-bar" data-total="100" data-value="100">
+                                    <div class="bar"
+                                         style="width: {{ heroes.player.health_points * 100 // heroes.player.unit_class.max_health }}%;"></div>
+                                </div>
+                                <div class="col right">{{ heroes.player.unit_class.max_health }}</div>
+                            </div>
+                        </div>
+                        <div class="info_item">Выносливость
+                            <div class="div_center div_row">
+                                <div class="col left">{{ heroes.player.stamina_points }}</div>
+                                <div class="col health-bar" data-total="100" data-value="100">
+                                    <div class="bar_stamina"
+                                         style="width: {{ heroes.player.stamina_points * 100 // heroes.player.unit_class.max_stamina }}%;"></div>
+                                </div>
+                                <div class="col right">{{ heroes.player.unit_class.max_stamina }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col align-content-center" style="max-width: 200px; margin: auto">
+                        <button type="button" onclick="window.location.href='/fight/hit'"
+                                class="btn btn-success m-2 button">
+                            Удар
+                        </button>
+                        <br>
+                        <button type="button" onclick="window.location.href='/fight/use-skill'"
+                                class="btn btn-danger m-2 button">
+                            Навык
+                        </button>
+                        <br>
+                        <button type="button" onclick="window.location.href='/fight/pass-turn'"
+                                class="btn btn-warning m-2 button">
+                            Пропустить ход
+                        </button>
+                        <br>
+                        <button type="button" onclick="window.location.href='/fight/end-fight'"
+                                class="btn btn-secondary m-2 button">
+                            Конец боя
+                        </button>
+                    </div>
+                    <div class="col align-self-start">
+                        <h2 style="color: rgb(111,157,197)">{{ heroes.enemy.name }}</h2>
+                        <img src="/static/images/{{ heroes.enemy.unit_class.name.lower() }}.png">
+                        <h4 style="color: rgb(111,157,197)">Класс: {{ heroes.enemy.unit_class.name }}</h4>
+                        <div class="info_item">
+                            <h5 style="color: #257a27">Навык:</h5>
+                            {{ heroes.enemy.unit_class.skill.name }} / Урон: {{ heroes.enemy.unit_class.skill.damage }}
+                            | Выносливость: {{ heroes.enemy.unit_class.skill.stamina }}
+                        </div>
+                        <div class="info_item">
+                            <h5 style="color: #257a27">Экипировка:</h5>
+                        </div>
+                        <div class="info_item div_row">
+                            <div class="col left">
+                                <div class="div_center">Оружие<br>
+                                    <img src="/static/images/{{ heroes.enemy.weapon.name.lower() }}.png">
+                                </div>
+                                <div class="div_center">{{ heroes.enemy.weapon.name }}<br>
+                                    Урон: {{ heroes.enemy.weapon.min_damage }}
+                                    - {{ heroes.enemy.weapon.max_damage }}</div>
+                            </div>
+                            <div class="col right">
+                                <div class="div_center">Броня<br>
+                                    <img src="/static/images/{{ heroes.enemy.armor.name.lower() | replace(" ", "_") }}.png">
+                                </div>
+                                <div class="div_center">{{ heroes.enemy.armor.name }}<br>
+                                    Защита: {{ heroes.enemy.armor.defence }}</div>
+                            </div>
+                        </div>
+                        <div class="info_item">Здоровье
+                            <div class="div_center div_row">
+                                <div class="col left">{{ heroes.enemy.health_points }}</div>
+                                <div class="col health-bar"
+                                     data-total="{{ heroes.enemy.unit_class.max_health }}"
+                                     data-value="{{ heroes.enemy.health_points }}">
+                                    <div class="bar"
+                                         style="width: {{ heroes.enemy.health_points * 100 // heroes.enemy.unit_class.max_health }}%;"></div>
+                                </div>
+                                <div class="col right">{{ heroes.enemy.unit_class.max_health }}</div>
+                            </div>
+                        </div>
+                        <div class="info_item">Выносливость
+                            <div class="div_center div_row">
+                                <div class="col left">{{ heroes.enemy.stamina_points }}</div>
+                                <div class="col health-bar"
+                                     data-total="{{ heroes.enemy.unit_class.max_stamina }}"
+                                     data-value="{{ heroes.enemy.stamina_points }}">
+                                    <div class="bar_stamina"
+                                         style="width: {{ heroes.enemy.stamina_points * 100 // heroes.enemy.unit_class.max_stamina }}%;"></div>
+                                </div>
+                                <div class="col right">{{ heroes.enemy.unit_class.max_stamina }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <hr>
+                <div class="row">
+                    <div class="col align-content-center div_center">
+                        <p><em>{{ result | safe }}</em></p>
+                        <p>{{ battle_result }}</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}
